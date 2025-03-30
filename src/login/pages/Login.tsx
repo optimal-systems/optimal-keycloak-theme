@@ -46,14 +46,13 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
             setIsLoading(true);
             try {
                 // Let Keycloak handle the form submission
-                return true;
+                const form = e.target as HTMLFormElement;
+                form.submit();
             } catch (error) {
                 console.error('Login failed:', error);
                 setIsLoading(false);
-                return false;
             }
         }
-        return false;
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,7 +95,11 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                         <Stack spacing={4} w="full">
                             {!usernameHidden && (
                                 <FormControl isInvalid={isUsernameError || messagesPerField.existsError("username", "password")}>
-                                    <FormLabel fontSize="sm" color="brand.secondary">
+                                    <FormLabel 
+                                        htmlFor="username"
+                                        fontSize="sm" 
+                                        color="brand.secondary"
+                                    >
                                         {!realm.loginWithEmailAllowed
                                             ? msg("username")
                                             : !realm.registrationEmailAsUsername
@@ -124,9 +127,12 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                                         focusBorderColor="brand.primary"
                                         aria-required="true"
                                         disabled={isLoading}
+                                        aria-describedby={isUsernameError ? "username-error" : undefined}
                                     />
                                     {isUsernameError && (
-                                        <FormErrorMessage>Please enter your username</FormErrorMessage>
+                                        <FormErrorMessage id="username-error">
+                                            Please enter your username
+                                        </FormErrorMessage>
                                     )}
                                     {messagesPerField.existsError("username", "password") && (
                                         <FormErrorMessage>
@@ -137,7 +143,13 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                             )}
 
                             <FormControl isInvalid={isPasswordError || messagesPerField.existsError("username", "password")}>
-                                <FormLabel fontSize="sm" color="brand.secondary">{msg("password")}</FormLabel>
+                                <FormLabel 
+                                    htmlFor="password"
+                                    fontSize="sm" 
+                                    color="brand.secondary"
+                                >
+                                    {msg("password")}
+                                </FormLabel>
                                 <InputGroup size="lg">
                                     <Input
                                         tabIndex={3}
@@ -149,31 +161,34 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                                         placeholder="********"
                                         autoComplete="current-password"
                                         aria-invalid={isPasswordError || messagesPerField.existsError("username", "password")}
-                    focusBorderColor="brand.primary"
+                                        focusBorderColor="brand.primary"
                                         aria-required="true"
                                         disabled={isLoading}
-                  />
-                  <InputRightElement h="full">
-                    <IconButton
+                                        aria-describedby={isPasswordError ? "password-error" : undefined}
+                                    />
+                                    <InputRightElement h="full">
+                                        <IconButton
                                             aria-label={showPassword ? msgStr("hidePassword") : msgStr("showPassword")}
                                             icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                      onClick={() => setShowPassword(!showPassword)}
-                      variant="ghost"
-                      size="sm"
-                      color="brand.secondary"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            variant="ghost"
+                                            size="sm"
+                                            color="brand.secondary"
                                             disabled={isLoading}
-                    />
-                  </InputRightElement>
-                </InputGroup>
+                                        />
+                                    </InputRightElement>
+                                </InputGroup>
                                 {isPasswordError && (
-                                    <FormErrorMessage>Please enter your password</FormErrorMessage>
+                                    <FormErrorMessage id="password-error">
+                                        Please enter your password
+                                    </FormErrorMessage>
                                 )}
                                 {messagesPerField.existsError("username", "password") && (
                                     <FormErrorMessage>
                                         {messagesPerField.getFirstError("username", "password")}
                                     </FormErrorMessage>
                                 )}
-              </FormControl>
+                            </FormControl>
 
                             <Box textAlign="right">
                                 {realm.resetPasswordAllowed && (
