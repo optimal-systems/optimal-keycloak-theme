@@ -20,9 +20,9 @@ import {
     List,
     ListItem,
     ListIcon,
+    Collapse,
 } from '@chakra-ui/react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { ShoppingBasket, UserPlus, Check, X } from 'lucide-react';
+import { ShoppingBasket, UserPlus, Check, X, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const MotionButton = motion(Button);
@@ -35,6 +35,7 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -57,18 +58,36 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
 
     useEffect(() => {
         const password = formData.password;
-        const username = formData.email.split('@')[0].toLowerCase();
+        const emailUsername = formData.email.split('@')[0].toLowerCase();
+        const username = formData.username.toLowerCase();
         const passwordLower = password.toLowerCase();
+        
+        // Only trigger username validation if 3 or more consecutive characters match
+        const MIN_SUBSTRING_LENGTH = 3;
+        
+        // Check if password contains a substring of username with minimum length
+        const containsUsernameSubstring = (username: string, password: string): boolean => {
+            if (!username || username.length < MIN_SUBSTRING_LENGTH) return false;
+            
+            for (let i = 0; i <= username.length - MIN_SUBSTRING_LENGTH; i++) {
+                const substring = username.substring(i, i + MIN_SUBSTRING_LENGTH);
+                if (password.includes(substring)) return true;
+            }
+            return false;
+        };
+        
+        const doesNotContainEmailUsername = !containsUsernameSubstring(emailUsername, passwordLower);
+        const doesNotContainUsername = !containsUsernameSubstring(username, passwordLower);
         
         setPasswordRequirements({
             minLength: password.length >= 8,
-            notContainsUsername: username ? !passwordLower.includes(username) : true,
+            notContainsUsername: doesNotContainEmailUsername && doesNotContainUsername,
             specialCharacters: /[!@#$%^&*(),.?":{}|<>]/.test(password),
             uppercaseCharacters: /[A-Z]/.test(password),
             lowercaseCharacters: /[a-z]/.test(password),
             digits: /\d/.test(password),
         });
-    }, [formData.password, formData.email]);
+    }, [formData.password, formData.email, formData.username]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -102,6 +121,21 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
             ...prev,
             [stateKey]: value
         }));
+    };
+
+    const getErrorMessage = (field: string) => {
+        if (!formData[field as keyof typeof formData]) {
+            // Format camelCase field names with spaces before capital letters
+            const formattedField = field.replace(/([A-Z])/g, ' $1').trim();
+            return `${formattedField.charAt(0).toUpperCase() + formattedField.slice(1)} is required`;
+        }
+        if (field === 'confirmPassword' && formData.password !== formData.confirmPassword) {
+            return 'Passwords do not match';
+        }
+        if (field === 'email' && !/\S+@\S+\.\S+/.test(formData.email)) {
+            return 'Please enter a valid email address';
+        }
+        return '';
     };
 
     const isPasswordValid = Object.values(passwordRequirements).every(Boolean);
@@ -171,7 +205,7 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
                                         focusBorderColor="brand.primary"
                                         disabled={isLoading}
                                     />
-                                    <FormErrorMessage>First name is required</FormErrorMessage>
+                                    <FormErrorMessage>{getErrorMessage('firstName')}</FormErrorMessage>
                                 </FormControl>
 
                                 <FormControl isInvalid={isSubmitted && !formData.lastName}>
@@ -186,7 +220,7 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
                                         focusBorderColor="brand.primary"
                                         disabled={isLoading}
                                     />
-                                    <FormErrorMessage>Last name is required</FormErrorMessage>
+                                    <FormErrorMessage>{getErrorMessage('lastName')}</FormErrorMessage>
                                 </FormControl>
                             </HStack>
 
@@ -203,7 +237,7 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
                                     focusBorderColor="brand.primary"
                                     disabled={isLoading}
                                 />
-                                <FormErrorMessage>Please enter a valid email address</FormErrorMessage>
+                                <FormErrorMessage>{getErrorMessage('email')}</FormErrorMessage>
                             </FormControl>
 
                             <FormControl isInvalid={isSubmitted && !formData.username}>
@@ -218,7 +252,7 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
                                     focusBorderColor="brand.primary"
                                     disabled={isLoading}
                                 />
-                                <FormErrorMessage>Username is required</FormErrorMessage>
+                                <FormErrorMessage>{getErrorMessage('username')}</FormErrorMessage>
                             </FormControl>
 
                             <FormControl isInvalid={isSubmitted && (!formData.password || !isPasswordValid)}>
@@ -233,11 +267,18 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
                                         onChange={handleChange}
                                         focusBorderColor="brand.primary"
                                         disabled={isLoading}
+                                        onFocus={() => setIsPasswordFocused(true)}
+                                        onBlur={() => {
+                                            // Only hide requirements if password is empty or valid
+                                            if (!formData.password || isPasswordValid) {
+                                                setIsPasswordFocused(false);
+                                            }
+                                        }}
                                     />
                                     <InputRightElement h="full">
                                         <IconButton
                                             aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                            icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                                            icon={showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                             onClick={() => setShowPassword(!showPassword)}
                                             variant="ghost"
                                             size="sm"
@@ -246,58 +287,60 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
                                         />
                                     </InputRightElement>
                                 </InputGroup>
-                                <Box mt={2}>
-                                    <List spacing={1} fontSize="xs" color="gray.600">
-                                        <ListItem display="flex" alignItems="center">
-                                            <ListIcon
-                                                as={passwordRequirements.minLength ? Check : X}
-                                                color={passwordRequirements.minLength ? 'green.500' : 'red.500'}
-                                                boxSize={4}
-                                            />
-                                            Minimum length of 8 characters
-                                        </ListItem>
-                                        <ListItem display="flex" alignItems="center">
-                                            <ListIcon
-                                                as={passwordRequirements.notContainsUsername ? Check : X}
-                                                color={passwordRequirements.notContainsUsername ? 'green.500' : 'red.500'}
-                                                boxSize={4}
-                                            />
-                                            Does not contain username
-                                        </ListItem>
-                                        <ListItem display="flex" alignItems="center">
-                                            <ListIcon
-                                                as={passwordRequirements.specialCharacters ? Check : X}
-                                                color={passwordRequirements.specialCharacters ? 'green.500' : 'red.500'}
-                                                boxSize={4}
-                                            />
-                                            At least 1 special character
-                                        </ListItem>
-                                        <ListItem display="flex" alignItems="center">
-                                            <ListIcon
-                                                as={passwordRequirements.uppercaseCharacters ? Check : X}
-                                                color={passwordRequirements.uppercaseCharacters ? 'green.500' : 'red.500'}
-                                                boxSize={4}
-                                            />
-                                            At least 1 uppercase character
-                                        </ListItem>
-                                        <ListItem display="flex" alignItems="center">
-                                            <ListIcon
-                                                as={passwordRequirements.lowercaseCharacters ? Check : X}
-                                                color={passwordRequirements.lowercaseCharacters ? 'green.500' : 'red.500'}
-                                                boxSize={4}
-                                            />
-                                            At least 1 lowercase character
-                                        </ListItem>
-                                        <ListItem display="flex" alignItems="center">
-                                            <ListIcon
-                                                as={passwordRequirements.digits ? Check : X}
-                                                color={passwordRequirements.digits ? 'green.500' : 'red.500'}
-                                                boxSize={4}
-                                            />
-                                            At least 1 digit
-                                        </ListItem>
-                                    </List>
-                                </Box>
+                                <Collapse in={!!(isPasswordFocused || (formData.password && !isPasswordValid))} animateOpacity>
+                                    <Box mt={2}>
+                                        <List spacing={1} fontSize="xs" color="gray.600">
+                                            <ListItem display="flex" alignItems="center">
+                                                <ListIcon
+                                                    as={passwordRequirements.minLength ? Check : X}
+                                                    color={passwordRequirements.minLength ? 'green.500' : 'red.500'}
+                                                    boxSize={4}
+                                                />
+                                                Minimum length of 8 characters
+                                            </ListItem>
+                                            <ListItem display="flex" alignItems="center">
+                                                <ListIcon
+                                                    as={passwordRequirements.notContainsUsername ? Check : X}
+                                                    color={passwordRequirements.notContainsUsername ? 'green.500' : 'red.500'}
+                                                    boxSize={4}
+                                                />
+                                                Does not contain username
+                                            </ListItem>
+                                            <ListItem display="flex" alignItems="center">
+                                                <ListIcon
+                                                    as={passwordRequirements.specialCharacters ? Check : X}
+                                                    color={passwordRequirements.specialCharacters ? 'green.500' : 'red.500'}
+                                                    boxSize={4}
+                                                />
+                                                At least 1 special character
+                                            </ListItem>
+                                            <ListItem display="flex" alignItems="center">
+                                                <ListIcon
+                                                    as={passwordRequirements.uppercaseCharacters ? Check : X}
+                                                    color={passwordRequirements.uppercaseCharacters ? 'green.500' : 'red.500'}
+                                                    boxSize={4}
+                                                />
+                                                At least 1 uppercase character
+                                            </ListItem>
+                                            <ListItem display="flex" alignItems="center">
+                                                <ListIcon
+                                                    as={passwordRequirements.lowercaseCharacters ? Check : X}
+                                                    color={passwordRequirements.lowercaseCharacters ? 'green.500' : 'red.500'}
+                                                    boxSize={4}
+                                                />
+                                                At least 1 lowercase character
+                                            </ListItem>
+                                            <ListItem display="flex" alignItems="center">
+                                                <ListIcon
+                                                    as={passwordRequirements.digits ? Check : X}
+                                                    color={passwordRequirements.digits ? 'green.500' : 'red.500'}
+                                                    boxSize={4}
+                                                />
+                                                At least 1 digit
+                                            </ListItem>
+                                        </List>
+                                    </Box>
+                                </Collapse>
                             </FormControl>
 
                             <FormControl isInvalid={isSubmitted && (!formData.confirmPassword || formData.password !== formData.confirmPassword)}>
@@ -318,7 +361,7 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
                                     <InputRightElement h="full">
                                         <IconButton
                                             aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                                            icon={showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                                            icon={showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                             variant="ghost"
                                             size="sm"
