@@ -1,11 +1,7 @@
 {
-    "name": "keycloakify-starter",
-    "version": "0.0.0",
-    "description": "Starter for Keycloakify 11",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/codegouvfr/keycloakify-starter.git"
-    },
+    "name": "optimal-keycloak-theme",
+    "version": "0.0.1",
+    "description": "Optimal theme for Keycloak using Keycloakify",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -17,13 +13,18 @@
     "license": "MIT",
     "keywords": [],
     "dependencies": {
+        "@chakra-ui/icons": "^2.2.4",
+        "@chakra-ui/react": "^2.8.2",
+        "@emotion/react": "^11.11.3",
+        "@emotion/styled": "^11.11.0",
+        "framer-motion": "^10.18.0",
         "keycloakify": "^11.8.22",
+        "lucide-react": "^0.484.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.15.0",
-        "storybook": "^8.1.10",
         "@storybook/react": "^8.1.10",
         "@storybook/react-vite": "^8.1.10",
         "@types/react": "^18.2.43",
@@ -39,9 +40,10 @@
         "eslint-plugin-storybook": "^0.11.1",
         "globals": "^15.12.0",
         "prettier": "3.3.1",
+        "storybook": "^8.1.10",
         "typescript": "^5.2.2",
         "typescript-eslint": "^8.15.0",
-        "vite": "^5.0.8"
+        "vite": "^6.2.3"
     },
     "engines": {
         "node": "^18.0.0 || >=20.0.0"
