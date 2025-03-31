@@ -1,5 +1,5 @@
 <p align="center">
-    <i>🚀 <a href="https://keycloakify.dev">Keycloakify</a> v11 starter 🚀</i>
+    <i>🚀 <a href="https://keycloakify.dev">Keycloakify</a> v11 Optimal Theme 🚀</i>
     <br/>
     <br/>
 </p>
@@ -7,9 +7,9 @@
 # Quick start
 
 ```bash
-git clone https://github.com/keycloakify/keycloakify-starter
-cd keycloakify-starter
-yarn install # Or use an other package manager, just be sure to delete the yarn.lock if you use another package manager.
+git clone https://github.com/optimal-systems/optimal-keycloak-theme.git
+cd optimal-keycloak-theme
+npm install # Or use an other package manager, just be sure to delete the package-lock.json if you use another package manager.
 ```
 
 # Testing the theme locally
