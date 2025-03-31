@@ -110,8 +110,6 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
         
         // Map form field names to state keys
         const fieldNameMap: Record<string, string> = {
-            'first-name': 'firstName',
-            'last-name': 'lastName',
             'password-confirm': 'confirmPassword'
         };
         
@@ -196,7 +194,7 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
                                 <FormControl isInvalid={isSubmitted && !formData.firstName}>
                                     <FormLabel fontSize="sm" color="brand.secondary">First Name</FormLabel>
                                     <Input
-                                        name="first-name"
+                                        name="firstName"
                                         id="firstName"
                                         placeholder="Test"
                                         value={formData.firstName}
@@ -211,7 +209,7 @@ export default function Register(props: PageProps<Extract<KcContext, { pageId: "
                                 <FormControl isInvalid={isSubmitted && !formData.lastName}>
                                     <FormLabel fontSize="sm" color="brand.secondary">Last Name</FormLabel>
                                     <Input
-                                        name="last-name"
+                                        name="lastName"
                                         id="lastName"
                                         placeholder="Test"
                                         value={formData.lastName}
