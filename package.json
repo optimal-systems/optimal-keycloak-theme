@@ -1,6 +1,6 @@
 {
     "name": "optimal-keycloak-theme",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "description": "Optimal theme for Keycloak using Keycloakify",
     "type": "module",
     "scripts": {
