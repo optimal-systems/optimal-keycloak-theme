@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { KcPage } from "./kc.gen";
-import { theme } from './theme';
+import { theme } from "./theme";
 
 // The following block can be uncommented to test a specific page with `yarn dev`
 // Don't forget to comment back or your bundle size will increase

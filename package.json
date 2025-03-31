@@ -1,6 +1,6 @@
 {
     "name": "optimal-keycloak-theme",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Optimal theme for Keycloak using Keycloakify",
     "type": "module",
     "scripts": {
@@ -8,7 +8,7 @@
         "build": "tsc && vite build",
         "build-keycloak-theme": "npm run build && keycloakify build",
         "storybook": "storybook dev -p 6006",
-        "format": "prettier . --write"
+        "format": "prettier . --write && eslint . --fix"
     },
     "license": "MIT",
     "keywords": [],

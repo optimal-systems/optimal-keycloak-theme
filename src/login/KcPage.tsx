@@ -22,27 +22,30 @@ export default function KcPage(props: { kcContext: KcContext }) {
         <Suspense>
             {(() => {
                 switch (kcContext.pageId) {
-                    case "login.ftl": return (
-                        <Login
-                        {...{ kcContext, i18n, classes }}
-                        Template={Template}
-                        doUseDefaultCss={true}
-                        />
-                    );
-                    case "login-reset-password.ftl": return (
-                        <LoginResetPassword
-                        {...{ kcContext, i18n, classes }}
-                        Template={Template}
-                        doUseDefaultCss={true}
-                        />
-                    );
-                    case "register.ftl": return (
-                        <Register
-                        {...{ kcContext, i18n, classes }}
-                        Template={Template}
-                        doUseDefaultCss={true}
-                        />
-                    );
+                    case "login.ftl":
+                        return (
+                            <Login
+                                {...{ kcContext, i18n, classes }}
+                                Template={Template}
+                                doUseDefaultCss={true}
+                            />
+                        );
+                    case "login-reset-password.ftl":
+                        return (
+                            <LoginResetPassword
+                                {...{ kcContext, i18n, classes }}
+                                Template={Template}
+                                doUseDefaultCss={true}
+                            />
+                        );
+                    case "register.ftl":
+                        return (
+                            <Register
+                                {...{ kcContext, i18n, classes }}
+                                Template={Template}
+                                doUseDefaultCss={true}
+                            />
+                        );
                     default:
                         return (
                             <DefaultPage
@@ -64,5 +67,5 @@ export default function KcPage(props: { kcContext: KcContext }) {
 const classes = {
     kcHtmlClass: "",
     kcBodyClass: "",
-    kcLoginClass: "",
+    kcLoginClass: ""
 } satisfies { [key in ClassKey]?: string };

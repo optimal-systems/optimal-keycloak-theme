@@ -2,21 +2,9 @@ import React, { useState } from "react";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
 import type { KcContext } from "../KcContext";
 import type { I18n } from "../i18n";
-import {
-    Box,
-    Button,
-    Container,
-    FormControl,
-    FormLabel,
-    Input,
-    Stack,
-    Text,
-    Center,
-    FormErrorMessage,
-    Image,
-} from '@chakra-ui/react';
-import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { Box, Button, Container, FormControl, FormLabel, Input, Stack, Text, Center, FormErrorMessage, Image } from "@chakra-ui/react";
+import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 import forgotPasswordIllustration from "../assets/forgot-password.webp";
 
 const MotionButton = motion(Button);
@@ -37,7 +25,7 @@ export default function LoginResetPassword(props: PageProps<Extract<KcContext, {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitted(true);
-        
+
         if (formData.username) {
             setIsLoading(true);
             try {
@@ -45,7 +33,7 @@ export default function LoginResetPassword(props: PageProps<Extract<KcContext, {
                 setIsSuccess(true);
                 return true;
             } catch (error) {
-                console.error('Reset password failed:', error);
+                console.error("Reset password failed:", error);
                 setIsLoading(false);
                 return false;
             }
@@ -66,12 +54,12 @@ export default function LoginResetPassword(props: PageProps<Extract<KcContext, {
     return (
         <Center minH="100vh" bg="gray.50">
             <Container maxW="md" py={8}>
-                <MotionStack 
-                    spacing={8} 
-                    align="center" 
-                    bg="white" 
-                    p={8} 
-                    borderRadius="lg" 
+                <MotionStack
+                    spacing={8}
+                    align="center"
+                    bg="white"
+                    p={8}
+                    borderRadius="lg"
                     boxShadow="sm"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -87,8 +75,8 @@ export default function LoginResetPassword(props: PageProps<Extract<KcContext, {
                             as="a"
                             href={url.loginUrl}
                             _hover={{
-                                bg: 'gray.100',
-                                transform: 'translateX(-4px)',
+                                bg: "gray.100",
+                                transform: "translateX(-4px)"
                             }}
                             transition="all 0.2s"
                         >
@@ -103,10 +91,10 @@ export default function LoginResetPassword(props: PageProps<Extract<KcContext, {
                             alt="Forgot Password Illustration"
                             width={200}
                             height={200}
-                            style={{ objectFit: 'contain' }}
+                            style={{ objectFit: "contain" }}
                         />
                     </Box>
-                    
+
                     {/* Header Text */}
                     <Stack spacing={2} textAlign="center" w="full">
                         <Text fontSize="2xl" fontWeight="bold" color="brand.secondary">
@@ -118,24 +106,17 @@ export default function LoginResetPassword(props: PageProps<Extract<KcContext, {
                     </Stack>
 
                     {isSuccess ? (
-                        <MotionStack 
-                            spacing={4} 
-                            textAlign="center" 
+                        <MotionStack
+                            spacing={4}
+                            textAlign="center"
                             w="full"
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <Box
-                                p={6}
-                                bg="green.50"
-                                borderRadius="md"
-                                border="1px"
-                                borderColor="green.200"
-                            >
+                            <Box p={6} bg="green.50" borderRadius="md" border="1px" borderColor="green.200">
                                 <Text color="green.600" fontSize="sm">
-                                    Reset instructions have been sent to your email address.
-                                    Please check your inbox and follow the instructions.
+                                    Reset instructions have been sent to your email address. Please check your inbox and follow the instructions.
                                 </Text>
                             </Box>
                             <MotionButton
@@ -151,21 +132,17 @@ export default function LoginResetPassword(props: PageProps<Extract<KcContext, {
                             </MotionButton>
                         </MotionStack>
                     ) : (
-                        <form 
-                            id="kc-reset-password-form" 
+                        <form
+                            id="kc-reset-password-form"
                             onSubmit={handleSubmit}
-                            action={url.loginAction} 
+                            action={url.loginAction}
                             method="post"
-                            style={{ width: '100%' }} 
+                            style={{ width: "100%" }}
                             noValidate
                         >
                             <Stack spacing={6} w="full">
                                 <FormControl isInvalid={isUsernameError || messagesPerField.existsError("username")}>
-                                    <FormLabel 
-                                        htmlFor="username"
-                                        fontSize="sm" 
-                                        color="brand.secondary"
-                                    >
+                                    <FormLabel htmlFor="username" fontSize="sm" color="brand.secondary">
                                         {!realm.loginWithEmailAllowed
                                             ? msg("username")
                                             : !realm.registrationEmailAsUsername
@@ -185,22 +162,16 @@ export default function LoginResetPassword(props: PageProps<Extract<KcContext, {
                                             !realm.loginWithEmailAllowed
                                                 ? "test"
                                                 : !realm.registrationEmailAsUsername
-                                                    ? "test@test.com"
-                                                    : "test@test.com"
+                                                  ? "test@test.com"
+                                                  : "test@test.com"
                                         }
                                         focusBorderColor="brand.primary"
                                         disabled={isLoading}
                                         aria-describedby={isUsernameError ? "username-error" : undefined}
                                     />
-                                    {isUsernameError && (
-                                        <FormErrorMessage id="username-error">
-                                            Please enter your email address
-                                        </FormErrorMessage>
-                                    )}
+                                    {isUsernameError && <FormErrorMessage id="username-error">Please enter your email address</FormErrorMessage>}
                                     {messagesPerField.existsError("username") && (
-                                        <FormErrorMessage>
-                                            {messagesPerField.get("username")}
-                                        </FormErrorMessage>
+                                        <FormErrorMessage>{messagesPerField.get("username")}</FormErrorMessage>
                                     )}
                                 </FormControl>
 
