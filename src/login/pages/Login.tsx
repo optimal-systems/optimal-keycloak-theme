@@ -15,10 +15,11 @@ import {
     Text,
     IconButton,
     Center,
-    FormErrorMessage
+    FormErrorMessage,
+    Link
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { ShoppingBasket, LogIn } from "lucide-react";
+import { ShoppingBasket, LogIn, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
 const MotionButton = motion(Button);
@@ -26,7 +27,7 @@ const MotionButton = motion(Button);
 export default function Login(props: PageProps<Extract<KcContext, { pageId: "login.ftl" }>, I18n>) {
     const { kcContext, i18n } = props;
 
-    const { realm, url, usernameHidden, login, auth, registrationDisabled, messagesPerField } = kcContext;
+    const { realm, url, usernameHidden, login, auth, registrationDisabled, messagesPerField, client } = kcContext;
 
     const { msg, msgStr } = i18n;
 
@@ -49,7 +50,6 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                 const form = e.target as HTMLFormElement;
                 form.submit();
             } catch (error) {
-                console.error("Login failed:", error);
                 setIsLoading(false);
             }
         }
@@ -70,6 +70,22 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
     return (
         <Center minH="100vh" bg="gray.50">
             <Container maxW="md" py={8}>
+                {/* Back to Website Link */}
+                <Box mb={4} textAlign="left">
+                    <Link
+                        href={(client as any)?.baseUrl}
+                        display="inline-flex"
+                        alignItems="center"
+                        color="brand.secondary"
+                        fontSize="sm"
+                        _hover={{ textDecoration: "none", color: "brand.primary" }}
+                        style={{ pointerEvents: isLoading ? "none" : "auto", opacity: isLoading ? 0.6 : 1 }}
+                    >
+                        <ArrowLeft size={16} style={{ marginRight: "4px" }} />
+                        Back to Website
+                    </Link>
+                </Box>
+
                 <Stack spacing={8} align="center" bg="white" p={8} borderRadius="lg" boxShadow="sm">
                     {/* Logo */}
                     <Box position="relative" w="50px" h="50px">
